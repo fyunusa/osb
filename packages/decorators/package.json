@@ -1,6 +1,6 @@
 {
     "name": "@osb/decorators",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Decorator utilities for OSB backend modeling",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -18,8 +18,8 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "@osb/core": "file:../core",
-        "@osb/types": "file:../types",
+        "@osb/core": "workspace:*",
+        "@osb/types": "workspace:*",
         "reflect-metadata": "^0.2.2"
     },
     "devDependencies": {

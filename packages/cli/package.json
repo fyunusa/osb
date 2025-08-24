@@ -11,9 +11,9 @@
     },
     "dependencies": {
         "ts-node": "^10.9.1",
-        "@osb/core": "file:../core",
-        "@osb/decorators": "file:../decorators",
-        "@osb/types": "file:../types",
+        "@osb/core": "workspace:*",
+        "@osb/decorators": "workspace:*",
+        "@osb/types": "workspace:*",
         "commander": "^11.1.0",
         "reflect-metadata": "^0.2.2"
     },

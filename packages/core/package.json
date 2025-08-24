@@ -1,6 +1,6 @@
 {
   "name": "@osb/core",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Core engine and metadata utilities for OSB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "reflect-metadata": "^0.2.2",
-    "@osb/types": "file:../types"
+    "@osb/types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

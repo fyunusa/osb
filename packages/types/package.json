@@ -1,6 +1,6 @@
 {
     "name": "@osb/types",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Type definitions for OSB backend modeling",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -16,8 +16,8 @@
         "metadata"
     ],
     "dependencies": {
-        "@osb/core": "file:../core",
-        "@osb/types": "file:../types"
+        "@osb/core": "workspace:*",
+        "@osb/types": "workspace:*"
     },
     "author": "",
     "license": "MIT",
