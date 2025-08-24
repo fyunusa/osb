@@ -1,0 +1,30 @@
+{
+    "name": "@osb/decorators",
+    "version": "0.0.1",
+    "description": "Decorator utilities for OSB backend modeling",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "ts-node src/demo.ts"
+    },
+    "keywords": [
+        "osb",
+        "backend",
+        "decorators",
+        "typescript",
+        "metadata"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@osb/core": "file:../core",
+        "@osb/types": "file:../types",
+        "reflect-metadata": "^0.2.2"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.2",
+        "ts-node": "^10.9.2",
+        "@types/node": "^24.3.0"
+    }
+}

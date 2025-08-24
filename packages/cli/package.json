@@ -1,0 +1,23 @@
+{
+    "name": "@osb/cli",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "devDependencies": {
+        "@types/node": "^20.0.0"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json"
+    },
+    "dependencies": {
+        "ts-node": "^10.9.1",
+        "@osb/core": "file:../core",
+        "@osb/decorators": "file:../decorators",
+        "@osb/types": "file:../types",
+        "commander": "^11.1.0",
+        "reflect-metadata": "^0.2.2"
+    },
+    "bin": {
+        "osb": "dist/index.js"
+    }
+}

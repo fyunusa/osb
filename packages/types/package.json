@@ -1,0 +1,29 @@
+{
+    "name": "@osb/types",
+    "version": "0.0.1",
+    "description": "Type definitions for OSB backend modeling",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "clean": "rm -rf dist"
+    },
+    "keywords": [
+        "osb",
+        "backend",
+        "decorators",
+        "typescript",
+        "metadata"
+    ],
+    "dependencies": {
+        "@osb/core": "file:../core",
+        "@osb/types": "file:../types"
+    },
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^5.9.2",
+        "ts-node": "^10.9.2",
+        "@types/node": "^24.3.0"
+    }
+}
