@@ -1,12 +1,4 @@
 {
-     "files": [],
-  "references": [
-    { "path": "packages/types" },
-    { "path": "packages/core" },
-    { "path": "packages/decorators" },
-    { "path": "packages/cli" },
-    { "path": "packages/playground" }
-  ],
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
@@ -14,24 +6,17 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-
-    // required for decorators
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-
-    // monorepo aliases
-    "baseUrl": ".",
-    "paths": {
-      "@osb/core/*": ["packages/core/src/*"],
-      "@osb/decorators/*": ["packages/decorators/src/*"],
-      "@osb/cli/*": ["packages/cli/src/*"],
-      "@osb/types": ["packages/types/src/index.ts"],
-      "@osb/playground/*": ["packages/playground/src/*"],
-      "@osb/core": ["packages/core/src/index.ts"],
-      "@osb/decorators": ["packages/decorators/src/index.ts"],
-      "@osb/cli": ["packages/cli/src/index.ts"],
-      "@osb/playground": ["packages/playground/src/index.ts"]
-    }
-  }
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": [
+    "packages/core",
+    "packages/cli",
+    "packages/decorators",
+    "packages/types"
+  ]
 }

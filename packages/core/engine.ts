@@ -1,4 +1,4 @@
-import { EngineOptions } from "@osb/types";
+import { EngineOptions } from "../types";
 import { BaseEngine } from "./engines/baseEngine";
 import { TypeOrmEngine } from "./engines/typeOrmEngine";
 

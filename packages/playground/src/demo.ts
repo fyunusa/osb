@@ -1,4 +1,4 @@
-import { OSBEngine } from "@osb/core";
+import { OSBEngine } from "../core";
 import { Model, Field, Validate } from "@osb/decorators";
 import * as path from "path";
 

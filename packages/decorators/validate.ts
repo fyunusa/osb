@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { defineValidation } from "@osb/core";
-import { ValidationRule } from "@osb/types";
+import { defineValidation } from "../core";
+import { ValidationRule } from "../types";
 
 export function Validate(
   rules: ValidationRule | ValidationRule[]

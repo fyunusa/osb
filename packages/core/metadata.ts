@@ -4,7 +4,7 @@ import {
   ModelOptions,
   RelationOptions,
   ValidationRule,
-} from "@osb/types";
+} from "../types";
 
 // =====================
 // Keys for metadata

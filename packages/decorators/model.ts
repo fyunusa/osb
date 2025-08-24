@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { defineModel } from "@osb/core";
-import { ModelOptions } from "@osb/types";
+import { defineModel } from "../core";
+import { ModelOptions } from "../types";
 
 export function Model(options: ModelOptions = {}): ClassDecorator {
   return (target) => {

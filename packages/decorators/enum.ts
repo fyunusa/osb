@@ -1,6 +1,6 @@
 // cli/packages/decorators/src/enums.ts
 import "reflect-metadata";
-import { defineEnum } from "@osb/core";
+import { defineEnum } from "../core";
 
 /**
  * Enum decorator

@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { OSBEngine } from "@osb/core";
+import { OSBEngine } from "../../core";
 import * as path from "path";
 import fs from "fs";
 

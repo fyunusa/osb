@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { defineField, defineEnum } from "@osb/core";
-import { FieldOptions } from "@osb/types";
+import { defineField, defineEnum } from "../core";
+import { FieldOptions } from "../types";
 
 export function Field(options: FieldOptions = {}): PropertyDecorator {
   return (target, propertyKey) => {

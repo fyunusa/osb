@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { defineRelation } from "@osb/core";
-import { RelationOptions } from "@osb/types";
+import { defineRelation } from "../core";
+import { RelationOptions } from "../types";
 
 export type RelationType =
   | "one-to-one"

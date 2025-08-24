@@ -6,10 +6,10 @@ import {
   generateController,
   generateEnums,
   generateService,
-} from "../generators";
-import { EngineOptions } from "@osb/types";
+} from "../generators-typeorm";
+import { EngineOptions } from "../../types";
 
-export class BaseEngine {
+export class TypeOrmEngine {
   constructor(private options: EngineOptions) {}
 
   writeEntities(model: Function) {
@@ -67,6 +67,6 @@ export class BaseEngine {
   private writeFile(dir: string, filename: string, content: string) {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, filename), content);
-    console.log(`Generated: ${path.join(dir, filename)}`);
+    console.log(`Generated (TypeORM): ${path.join(dir, filename)}`);
   }
 }
