@@ -17,6 +17,13 @@
     "prepare": "pnpm build",
     "clean": "rm -rf dist"
   },
+  "exports": {
+    "./decorators": {
+      "import": "./dist/packages/decorators/index.js",
+      "require": "./dist/packages/decorators/index.js",
+      "types": "./dist/packages/decorators/index.d.ts"
+    }
+  },
   "keywords": [
     "typescript",
     "generator",

@@ -14,8 +14,8 @@ export function generateCommand(program: Command) {
       "Path to the model file (absolute or relative)",
       "src/models"
     )
-    .option("--use-swagger", "Enable Swagger decorators", false)
-    .option("--use-typeorm", "Use TypeORM engine", false)
+    .option("--use-swagger [value]", "Enable Swagger decorators", false)
+    .option("--use-typeorm [value]", "Use TypeORM engine", false)
     .action(async (type, name, opts) => {
       let modelFile: string;
       let parentDir: string;
@@ -48,11 +48,31 @@ export function generateCommand(program: Command) {
         }
 
         // TS auto-detect
+        // if (modelFile.endsWith(".ts")) {
+        //   require("ts-node").register();
+        // }
+        // WITH THIS IMPROVED TS-NODE CONFIGURATION:
         if (modelFile.endsWith(".ts")) {
-          require("ts-node").register();
+          require("ts-node").register({
+            compilerOptions: {
+              // Use string values instead of enum references
+              target: "ES2020",
+              module: "CommonJS",
+              moduleResolution: "Node",
+              esModuleInterop: true,
+              experimentalDecorators: true,
+              emitDecoratorMetadata: true,
+              // Map osbts/decorators to node_modules
+              paths: {
+                "osbts/decorators": [
+                  "./node_modules/osbts/dist/packages/decorators/index",
+                ],
+              },
+              baseUrl: process.cwd(),
+            },
+            transpileOnly: true,
+          });
         }
-
-        console.log(`Loaded model from ${modelFile}`);
 
         const module = await import(modelFile);
         const Model = module[name] || module.default;
