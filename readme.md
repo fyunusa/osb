@@ -18,9 +18,9 @@ A powerful and flexible code generation tool for building TypeScript backend app
 ## Installation
 
 ```bash
-yarn add @osb/generator
+yarn add osbts
 # or
-npm install @osb/generator
+npm install osbts
 ```
 
 ---
@@ -126,7 +126,7 @@ yarn osb generate <type> <ModelName> --modelPath <path> --use-swagger true --use
 ## Model Example
 
 ```ts
-import { Model, Field, Validate } from "@osb/decorators";
+import { Model, Field, Validate } from "osbts/decorators";
 
 export enum Roles {
   ADMIN = "admin",
