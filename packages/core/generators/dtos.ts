@@ -34,6 +34,47 @@ function mapFieldType(
   }
 }
 
+// Determine which validators are needed for a field
+function getValidatorsForField(
+  model: Function,
+  fieldName: string,
+  type?: string,
+  isArray: boolean = false
+): Set<string> {
+  const validators = new Set<string>();
+  const enums = getEnums(model);
+  
+  validators.add("IsOptional");
+  
+  if (enums && enums[fieldName]) {
+    validators.add("IsEnum");
+    if (isArray) validators.add("IsArray");
+    return validators;
+  }
+  
+  switch (type) {
+    case "string":
+    case "uuid":
+    case undefined:
+      validators.add("IsString");
+      break;
+    case "number":
+      validators.add("IsNumber");
+      break;
+    case "boolean":
+      validators.add("IsBoolean");
+      break;
+    case "date":
+      validators.add("IsDate");
+      break;
+    case "json":
+      validators.add("IsObject");
+      break;
+  }
+  
+  return validators;
+}
+
 function enumValidator(
   model: Function,
   fieldName: string,
@@ -67,6 +108,10 @@ export function generateDTOs(
   const fields = getFields(model);
   const enums = getEnums(model);
 
+  // Track which validators are needed
+  const inputValidators = new Set<string>();
+  const updateValidators = new Set<string>();
+
   // Generate enum imports if any
   let enumImport = "";
   if (enums) {
@@ -79,9 +124,19 @@ export function generateDTOs(
   const inputFields = Object.entries(fields)
     .map(([name, opts]) => {
       const type = mapFieldType(model, name, opts.type);
+      const fieldValidators = getValidatorsForField(
+        model,
+        name,
+        opts.type,
+        opts.isArray
+      );
+      // Add all needed validators to our set
+      fieldValidators.forEach((v) => inputValidators.add(v));
+
       return `${swaggerProperty(useSwagger, name, type, true)}${enumValidator(
         model,
-        name
+        name,
+        opts.isArray
       )}  ${name}: ${type};`;
     })
     .join("\n");
@@ -89,9 +144,19 @@ export function generateDTOs(
   const updateFields = Object.entries(fields)
     .map(([name, opts]) => {
       const type = mapFieldType(model, name, opts.type);
+      const fieldValidators = getValidatorsForField(
+        model,
+        name,
+        opts.type,
+        opts.isArray
+      );
+      // Add all needed validators to our set
+      fieldValidators.forEach((v) => updateValidators.add(v));
+
       return `${swaggerProperty(useSwagger, name, type, false)}${enumValidator(
         model,
-        name
+        name,
+        opts.isArray
       )}  ${name}?: ${type};`;
     })
     .join("\n");
@@ -104,16 +169,26 @@ export function generateDTOs(
         name,
         type,
         true
-      )}${exposeProperty()}${enumValidator(model, name)}  ${name}: ${type};`;
+      )}${exposeProperty()}${enumValidator(
+        model,
+        name,
+        opts.isArray
+      )}  ${name}: ${type};`;
     })
     .join("\n");
 
-  const validatorImports = `import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsObject, IsEnum, IsArray } from "class-validator";\n`;
+  // Create the specific imports needed for each DTO
+  const inputValidatorImports = `import { ${Array.from(inputValidators).join(
+    ", "
+  )} } from "class-validator";\n`;
+  const updateValidatorImports = `import { ${Array.from(updateValidators).join(
+    ", "
+  )} } from "class-validator";\n`;
   const swagger = swaggerImports(useSwagger);
 
   return {
-    inputDto: `${enumImport}${swagger}${validatorImports}\nexport class ${modelName}InputDto {\n${inputFields}\n}`,
-    updateDto: `${enumImport}${swagger}${validatorImports}\nexport class ${modelName}UpdateDto {\n${updateFields}\n}`,
+    inputDto: `${enumImport}${swagger}${inputValidatorImports}\nexport class ${modelName}InputDto {\n${inputFields}\n}`,
+    updateDto: `${enumImport}${swagger}${updateValidatorImports}\nexport class ${modelName}UpdateDto {\n${updateFields}\n}`,
     outputDto: `${enumImport}${swagger}import { Expose } from 'class-transformer';\nexport class ${modelName}OutputDto {\n${outputFields}\n}`,
   };
 }
