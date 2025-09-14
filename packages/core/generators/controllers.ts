@@ -28,31 +28,33 @@ import { ${outputDto} } from "../dtos/${modelName}.outputDto";
 ${swaggerImports(useSwagger)}
 
 export class ${modelName}Controller {
-  private readonly service = new ${serviceName}();
+  constructor(
+    private readonly service: ${serviceName}
+  ) {}
 
   ${swaggerFindAll(useSwagger, lowerName)}
   async findAll(): Promise<${outputDto}[]> {
-    return this.service.findAll();
+    return await this.service.findAll();
   }
 
   ${swaggerFindOne(useSwagger, lowerName)}
-  async findOne(id: string): Promise<${outputDto}> {
-    return this.service.findOne(id);
+  async findOne(id: string): Promise<${outputDto} | null> {
+    return await this.service.findOne(id);
   }
 
   ${swaggerCreate(useSwagger, lowerName)}
   async create(input: ${inputDto}): Promise<${outputDto}> {
-    return this.service.create(input);
+    return await this.service.create(input);
   }
 
   ${swaggerUpdate(useSwagger, lowerName)}
-  async update(id: string, input: ${updateDto}): Promise<${outputDto}> {
-    return this.service.update(id, input);
+  async update(id: string, input: ${updateDto}): Promise<${outputDto} | null> {
+    return await this.service.update(id, input);
   }
 
   ${swaggerRemove(useSwagger, lowerName)}
-  async remove(id: string): Promise<void> {
-    return this.service.remove(id);
+  async remove(id: string): Promise<boolean> {
+    return await this.service.remove(id);
   }
 }
 `;

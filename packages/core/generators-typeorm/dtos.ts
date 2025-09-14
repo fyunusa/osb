@@ -34,6 +34,49 @@ function mapFieldType(
   }
 }
 
+// Determine which validators are needed for a field
+function getValidatorsForField(
+  model: Function,
+  fieldName: string,
+  type?: string,
+  isArray: boolean = false,
+  required: boolean = true
+): Set<string> {
+  const validators = new Set<string>();
+  const enums = getEnums(model);
+  
+  if (!required) {
+    validators.add("IsOptional");
+  }
+  
+  if (enums && enums[fieldName]) {
+    validators.add("IsEnum");
+    if (isArray) validators.add("IsArray");
+    return validators;
+  }
+  
+  switch (type) {
+    case "string":
+    case "uuid":
+    case undefined:
+      validators.add("IsString");
+      break;
+    case "number":
+      validators.add("IsNumber");
+      break;
+    case "boolean":
+      validators.add("IsBoolean");
+      break;
+    case "date":
+      validators.add("IsDate");
+      break;
+    case "json":
+      validators.add("IsObject");
+      break;
+  }
+  
+  return validators;
+}
 function enumValidator(
   model: Function,
   fieldName: string,
@@ -93,6 +136,10 @@ export function generateDTOs(
   const fields = getFields(model);
   const enums = getEnums(model);
 
+  // Track which validators are needed
+  const inputValidators = new Set<string>();
+  const updateValidators = new Set<string>();
+
   // Generate enum import statement if there are enums
   let enumImport = "";
   if (enums) {
@@ -102,14 +149,33 @@ export function generateDTOs(
     enumImport = `import { ${enumNames} } from "../enums/${modelName}.enums";\n`;
   }
 
-  const buildFields = (required: boolean, swaggerRequired: boolean): string =>
-    Object.entries(fields)
+  // Collect needed validators during field building
+  const buildFields = (required: boolean, swaggerRequired: boolean): string => {
+    return Object.entries(fields)
       .filter(([_, opts]) => required || !opts.required)
       .map(([name, opts]) => {
         const tsType = mapFieldType(model, name, opts.type);
+        const isArray = Array.isArray(opts.default);
+
+        // Get validators and add them to the tracking set
+        const fieldValidators = getValidatorsForField(
+          model,
+          name,
+          opts.type,
+          isArray,
+          required && opts.required
+        );
+
+        // Add to the appropriate set based on which DTO we're building
+        if (required) {
+          fieldValidators.forEach((v) => inputValidators.add(v));
+        } else {
+          fieldValidators.forEach((v) => updateValidators.add(v));
+        }
+
         const decorators = [
           ...mapValidator(opts.type, required && opts.required),
-          enumValidator(model, name, Array.isArray(opts.default)),
+          enumValidator(model, name, isArray),
           swaggerProperty(useSwagger, name, tsType, swaggerRequired),
         ]
           .filter(Boolean)
@@ -118,28 +184,42 @@ export function generateDTOs(
         return `  ${decorators}\n  ${name}${required ? "" : "?"}: ${tsType};`;
       })
       .join("\n\n");
+  };
 
   const inputFields = buildFields(true, true);
   const updateFields = buildFields(false, false);
+
+  // Output fields don't need validators
   const outputFields = Object.entries(fields)
     .map(([name, opts]) => {
       const tsType = mapFieldType(model, name, opts.type);
-      const decorators = [
-        swaggerProperty(useSwagger, name, tsType, true),
-        enumValidator(model, name),
-      ]
+      const decorators = [swaggerProperty(useSwagger, name, tsType, true)]
         .filter(Boolean)
         .join("\n  ");
       return `  ${decorators}\n  ${name}: ${tsType};`;
     })
     .join("\n\n");
 
-  const validatorImports = `import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsObject, IsEnum, IsArray } from "class-validator";\n`;
+  // Create specific validator imports for each DTO
+  const inputValidatorImports =
+    inputValidators.size > 0
+      ? `import { ${Array.from(inputValidators).join(
+          ", "
+        )} } from "class-validator";\n`
+      : "";
+
+  const updateValidatorImports =
+    updateValidators.size > 0
+      ? `import { ${Array.from(updateValidators).join(
+          ", "
+        )} } from "class-validator";\n`
+      : "";
+
   const swagger = swaggerImports(useSwagger);
 
   return {
-    inputDto: `${enumImport}${swagger}${validatorImports}\nexport class ${modelName}InputDto {\n${inputFields}\n}`,
-    updateDto: `${enumImport}${swagger}${validatorImports}\nexport class ${modelName}UpdateDto {\n${updateFields}\n}`,
+    inputDto: `${enumImport}${swagger}${inputValidatorImports}\nexport class ${modelName}InputDto {\n${inputFields}\n}`,
+    updateDto: `${enumImport}${swagger}${updateValidatorImports}\nexport class ${modelName}UpdateDto {\n${updateFields}\n}`,
     outputDto: `${enumImport}${swagger}\nexport class ${modelName}OutputDto {\n${outputFields}\n}`,
   };
 }
