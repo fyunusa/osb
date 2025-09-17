@@ -162,3 +162,7 @@ export class User {
 - TypeORM integration requires the `--use-typeorm true` flag.
 
 ---
+
+💬 Have questions or ideas?
+Join the conversation in [GitHub Discussions](https://github.com/fyunusa/osb/discussions).
+
