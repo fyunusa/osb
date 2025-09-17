@@ -1,6 +1,6 @@
 {
   "name": "osbts",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "A TypeScript-based code generator for models, DTOs, entities, services, and controllers",
   "main": "dist/packages/core/index.js",
   "types": "dist/packages/core/index.d.ts",
